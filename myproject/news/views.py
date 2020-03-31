@@ -68,7 +68,25 @@ def news_add(request):
                 return render(request, 'back/error.html' ,{'error':error})
 
         except:
+            # delete the file
+            fs = FileSystemStorage()
+            fs.delete(filename)
+
             error = "Please insert an image"
             return render(request, 'back/error.html' ,{'error':error})
 
     return render(request, 'back/news_add.html')
+
+
+def news_delete(request, pk):
+
+    try:
+        b = News.objects.get(pk=pk)
+        fs = FileSystemStorage()
+        fs.delete(b.picname)
+        b.delete()
+    except:
+        error = "something went wrong"
+        return render(request, 'back/error.html' ,{'error':error})
+
+    return redirect('news_list')
