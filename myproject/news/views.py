@@ -28,14 +28,29 @@ def news_add(request):
         if newstitle == "" or newstxt == "" or newstxtshort == "" or newscat == "":
             error = "All Fiels Required"
             return render(request, 'back/error.html' ,{'error':error})
+        try:
+            myfile = request.FILES['myfile']
+            fs = FileSystemStorage()
+            filename = fs.save(myfile.name, myfile)
+            url = fs.url(filename)
 
-        myfile = request.FILES['myfile']
-        fs = FileSystemStorage()
-        filename = fs.save(myfile.name, myfile)
-        url = fs.url(filename)
 
-        b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = '2020' ,pic = url, writer = '-', catname = newscat, catid = 0, show = 0)
-        b.save()
-        return redirect('news_list')
+            if str(myfile.content_type).startswith("image"):
+
+                if myfile.sise < 5000000:
+                    b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = '2020' ,picurl = url, picname = filename, writer = '-', catname = newscat, catid = 0, show = 0)
+                    b.save()
+                    return redirect('news_list')
+                else:
+                    error = "Your file is bigger than 5 MB"
+                    return render(request, 'back/error.html' ,{'error':error})
+
+            else:
+                error = "Your file is not supported please inser an image"
+                return render(request, 'back/error.html' ,{'error':error})
+
+        except:
+            error = "Please insert an image"
+            return render(request, 'back/error.html' ,{'error':error})
 
     return render(request, 'back/news_add.html')
