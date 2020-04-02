@@ -17,13 +17,15 @@ def cat_add(request):
             error = "Please Write a name of category"
             return render(request, 'back/error.html' ,{'error':error})
 
-        b = Cat(name = name)
-        b.save()
+
 
         if len(Cat.objects.filter(name=name)) != 0:
             error = "This Category is added before"
             return render(request, 'back/error.html' ,{'error':error})
 
+        b = Cat(name = name)
+        b.save()
+        
         return redirect('cat_list')
 
     return render(request , 'back/cat_add.html')
