@@ -10,10 +10,24 @@ from cat.models import Cat
 def news_detail(request, word):
 
 
-    site = Main.objects.get(pk=1)
-    news = News.objects.filter(name = word)
+    site = Main.objects.get(pk = 1)
+    news = News.objects.all().order_by('-pk')
+    lastnews = News.objects.all().order_by('-pk')[:3]
+    cat = Cat.objects.all()
+    subcat = SubCat.objects.all()
+    shownews = News.objects.filter(name = word)
 
-    return render(request, 'front/news_detail.html', {'news': news, 'site':site})
+    popnews = News.objects.all().order_by('-show')
+    popnews2 = News.objects.all().order_by('-show')[:3]
+    tagname = News.objects.get(name=word).tag
+    tag = tagname.split(',')
+
+    mynews = News.objects.get(name=word)
+    mynews. show = mynews.show + 1;
+    mynews.save()
+
+
+    return render(request, 'front/news_detail.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'shownews': shownews, 'popnews':popnews, 'popnews':popnews, 'tag' : tag})
 
 def news_list(request):
 
@@ -56,6 +70,7 @@ def news_add(request):
         newstxtshort = request.POST.get('newstxtshort')
         newstxt = request.POST.get('newstxt')
         newsid = request.POST.get('newscat')
+        tag = request.POST.get('tag')
 
         if newstitle == "" or newstxt == "" or newstxtshort == "" or newscat == "":
             error = "All Fiels Required"
@@ -74,7 +89,7 @@ def news_add(request):
                     newsname = SubCat.objects.get(pk = newsid).name
                     ocatid = SubCat.objects.get(pk = newsid).catid
 
-                    b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = today ,time = time, picurl = url, picname = filename, writer = '-', catname = newsname, catid = newsid, show = 0, ocatid = ocatid)
+                    b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = today ,time = time, picurl = url, picname = filename, writer = '-', catname = newsname, catid = newsid, show = 0, ocatid = ocatid, tag = tag)
                     b.save()
 
                     count = len(News.objects.filter(ocatid=ocatid))
@@ -154,6 +169,7 @@ def news_edit(request, pk):
         newstxtshort = request.POST.get('newstxtshort')
         newstxt = request.POST.get('newstxt')
         newsid = request.POST.get('newscat')
+        tag = request.POST.get('tag')
 
         if newstitle == "" or newstxt == "" or newstxtshort == "" or newscat == "":
             error = "All Fiels Required"
@@ -183,6 +199,7 @@ def news_edit(request, pk):
                     b.picurl = url
                     b.catname = newsname
                     b.catid = newsid
+                    b.tag = tag
                     b.save()
                     return redirect('news_list')
                 else:
@@ -209,6 +226,7 @@ def news_edit(request, pk):
             b.body_txt = newstxt
             b.catname = newsname
             b.catid = newsid
+            b.tag = tag
             b.save()
             return redirect('news_list')
 

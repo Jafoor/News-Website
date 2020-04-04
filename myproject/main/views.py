@@ -16,7 +16,10 @@ def home(request):
     cat = Cat.objects.all()
     subcat = SubCat.objects.all()
 
-    return render(request, 'front/home.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews})
+    popnews = News.objects.all().order_by('-show')
+    popnews2 = News.objects.all().order_by('-show')[:3]
+
+    return render(request, 'front/home.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2})
 
 def about(request):
     site = Main.objects.get(pk = 1)
@@ -100,7 +103,7 @@ def site_setting(request):
             fs2 = FileSystemStorage()
             filename2 = fs2.save(myfile2.name, myfile2)
             url2 = fs2.url(filename2)
-            
+
             picurl2 = url2
             picname2 = filename2
         except:

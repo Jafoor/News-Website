@@ -8,7 +8,7 @@
 
 {% block mainblock %}
 
-{% for i in news %}
+{% for i in shownews %}
 <!-- Breadcrumb -->
 <div class="container">
   <div class="headline bg0 flex-wr-sb-c p-rl-20 p-tb-8">
@@ -65,7 +65,7 @@
               </span>
 
               <span class="f1-s-3 cl8 m-r-15">
-                {{i.show}}
+                {{i.show}} views
               </span>
 
               <a href="#" class="f1-s-3 cl8 hov-cl10 trans-03 m-r-15">
@@ -122,35 +122,19 @@
             </div>
 
             <ul class="p-t-35">
-              <li class="how-bor3 p-rl-4">
-                <a href="#" class="dis-block f1-s-10 text-uppercase cl2 hov-cl10 trans-03 p-tb-13">
-                  Fashion
-                </a>
-              </li>
 
-              <li class="how-bor3 p-rl-4">
-                <a href="#" class="dis-block f1-s-10 text-uppercase cl2 hov-cl10 trans-03 p-tb-13">
-                  Beauty
-                </a>
-              </li>
+              {% for p in cat %}
 
+              {% if p.count != 0%}
               <li class="how-bor3 p-rl-4">
                 <a href="#" class="dis-block f1-s-10 text-uppercase cl2 hov-cl10 trans-03 p-tb-13">
-                  Street Style
+                  {{p.name}}({{p.count}})
                 </a>
               </li>
+              {% endif %}
+              {% endfor %}
 
-              <li class="how-bor3 p-rl-4">
-                <a href="#" class="dis-block f1-s-10 text-uppercase cl2 hov-cl10 trans-03 p-tb-13">
-                  Life Style
-                </a>
-              </li>
 
-              <li class="how-bor3 p-rl-4">
-                <a href="#" class="dis-block f1-s-10 text-uppercase cl2 hov-cl10 trans-03 p-tb-13">
-                  DIY & Crafts
-                </a>
-              </li>
             </ul>
           </div>
 
@@ -165,21 +149,24 @@
             </div>
 
             <ul class="p-t-35">
+
+              {% for pop in popnews2 %}
+              {% if pop.ocatid == i.ocatid and pop.count != 0%}
               <li class="flex-wr-sb-s p-b-30">
                 <a href="#" class="size-w-10 wrap-pic-w hov1 trans-03">
-                  <img src="images/popular-post-04.jpg" alt="IMG">
+                  <img src="{{pop.picurl}}" alt="IMG">
                 </a>
 
                 <div class="size-w-11">
                   <h6 class="p-b-4">
-                    <a href="blog-detail-02.html" class="f1-s-5 cl3 hov-cl10 trans-03">
-                      Donec metus orci, malesuada et lectus vitae
+                    <a href="{% url 'news_detail' word=pop.name %}" class="f1-s-5 cl3 hov-cl10 trans-03">
+                      {{pop.name}}
                     </a>
                   </h6>
 
                   <span class="cl8 txt-center p-b-24">
-                    <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
-                      Music
+                    <a href="{% url 'news_detail' word=pop.name %}" class="f1-s-6 cl8 hov-cl10 trans-03">
+                      {{pop.catname}}
                     </a>
 
                     <span class="f1-s-3 m-rl-3">
@@ -187,67 +174,16 @@
                     </span>
 
                     <span class="f1-s-3">
-                      Feb 18
+                      {{pop.date}}
                     </span>
                   </span>
                 </div>
               </li>
 
-              <li class="flex-wr-sb-s p-b-30">
-                <a href="#" class="size-w-10 wrap-pic-w hov1 trans-03">
-                  <img src="images/popular-post-05.jpg" alt="IMG">
-                </a>
+              {% endif %}
+              {% endfor %}
 
-                <div class="size-w-11">
-                  <h6 class="p-b-4">
-                    <a href="blog-detail-02.html" class="f1-s-5 cl3 hov-cl10 trans-03">
-                      Donec metus orci, malesuada et lectus vitae
-                    </a>
-                  </h6>
 
-                  <span class="cl8 txt-center p-b-24">
-                    <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
-                      Game
-                    </a>
-
-                    <span class="f1-s-3 m-rl-3">
-                      -
-                    </span>
-
-                    <span class="f1-s-3">
-                      Feb 16
-                    </span>
-                  </span>
-                </div>
-              </li>
-
-              <li class="flex-wr-sb-s p-b-30">
-                <a href="#" class="size-w-10 wrap-pic-w hov1 trans-03">
-                  <img src="images/popular-post-06.jpg" alt="IMG">
-                </a>
-
-                <div class="size-w-11">
-                  <h6 class="p-b-4">
-                    <a href="blog-detail-02.html" class="f1-s-5 cl3 hov-cl10 trans-03">
-                      Donec metus orci, malesuada et lectus vitae
-                    </a>
-                  </h6>
-
-                  <span class="cl8 txt-center p-b-24">
-                    <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
-                      Celebrity
-                    </a>
-
-                    <span class="f1-s-3 m-rl-3">
-                      -
-                    </span>
-
-                    <span class="f1-s-3">
-                      Feb 12
-                    </span>
-                  </span>
-                </div>
-              </li>
             </ul>
           </div>
 
@@ -260,37 +196,13 @@
             </div>
 
             <div class="flex-wr-s-s m-rl--5">
+              {% for tagname in tag %}
               <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                Fashion
+                {{tagname}}
               </a>
+              {% endfor %}
 
-              <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                Lifestyle
-              </a>
 
-              <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                Denim
-              </a>
-
-              <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                Streetstyle
-              </a>
-
-              <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                Crafts
-              </a>
-
-              <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                Magazine
-              </a>
-
-              <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                News
-              </a>
-
-              <a href="#" class="flex-c-c size-h-2 bo-1-rad-20 bocl12 f1-s-1 cl8 hov-btn2 trans-03 p-rl-20 p-tb-5 m-all-5">
-                Blogs
-              </a>
             </div>
           </div>
         </div>
