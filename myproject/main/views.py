@@ -23,7 +23,14 @@ def home(request):
 
 def about(request):
     site = Main.objects.get(pk = 1)
-    return render(request, 'front/about.html', {'site' : site})
+    news = News.objects.all().order_by('-pk')
+    lastnews = News.objects.all().order_by('-pk')[:3]
+    cat = Cat.objects.all()
+    subcat = SubCat.objects.all()
+
+    popnews = News.objects.all().order_by('-show')
+    popnews2 = News.objects.all().order_by('-show')[:3]
+    return render(request, 'front/about.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2})
 
 def panel(request):
 
@@ -128,3 +135,42 @@ def site_setting(request):
     site = Main.objects.get(pk=1)
 
     return render(request, 'back/settings.html',{'site':site})
+
+
+def about_setting(request):
+
+    # login check start
+    if not request.user.is_authenticated:
+        return redirect('mylogin')
+    # login check end
+
+    if request.method == 'POST':
+
+        txt = request.POST.get('txt')
+
+        if txt == "":
+            error = "All Fiels Required Filled"
+            return render(request, 'back/error.html',{'error':error})
+
+        b = Main.objects.get(pk=1)
+        b.abouttxt = txt
+        b.save()
+
+    about = Main.objects.get(pk=1).abouttxt
+
+    return render(request, 'back/about_setting.html', {'about': about})
+
+
+
+def contact(request):
+
+    site = Main.objects.get(pk = 1)
+    news = News.objects.all().order_by('-pk')
+    lastnews = News.objects.all().order_by('-pk')[:3]
+    cat = Cat.objects.all()
+    subcat = SubCat.objects.all()
+
+    popnews = News.objects.all().order_by('-show')
+    popnews2 = News.objects.all().order_by('-show')[:3]
+
+    return render(request, 'front/contact.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2})
