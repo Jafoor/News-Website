@@ -5,6 +5,9 @@ from news.models import News
 from cat.models import Cat
 from subcat.models import SubCat
 from django.contrib.auth import authenticate, login, logout
+from trending.models import Trending
+import random
+from random import randint
 # Create your views here.
 
 def home(request):
@@ -18,8 +21,11 @@ def home(request):
 
     popnews = News.objects.all().order_by('-show')
     popnews2 = News.objects.all().order_by('-show')[:3]
+    trending = Trending.objects.all().order_by('-pk')[:5]
 
-    return render(request, 'front/home.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2})
+    #random_object = Trending.objects.all()[random(0,len(trending)-1)]
+
+    return render(request, 'front/home.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2, 'trending':trending})
 
 def about(request):
     site = Main.objects.get(pk = 1)
@@ -30,7 +36,8 @@ def about(request):
 
     popnews = News.objects.all().order_by('-show')
     popnews2 = News.objects.all().order_by('-show')[:3]
-    return render(request, 'front/about.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2})
+    trending = Trending.objects.all().order_by('-pk')[:5]
+    return render(request, 'front/about.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2, 'trending':trending})
 
 def panel(request):
 
@@ -172,5 +179,6 @@ def contact(request):
 
     popnews = News.objects.all().order_by('-show')
     popnews2 = News.objects.all().order_by('-show')[:3]
+    trending = Trending.objects.all().order_by('-pk')[:5]
 
-    return render(request, 'front/contact.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2})
+    return render(request, 'front/contact.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2, 'trending':trending})

@@ -5,6 +5,7 @@ from django.core.files.storage import FileSystemStorage
 import datetime
 from subcat.models import SubCat
 from cat.models import Cat
+from trending.models import Trending
 # Create your views here.
 
 def news_detail(request, word):
@@ -21,13 +22,14 @@ def news_detail(request, word):
     popnews2 = News.objects.all().order_by('-show')[:3]
     tagname = News.objects.get(name=word).tag
     tag = tagname.split(',')
+    trending = Trending.objects.all().order_by('-pk')[:5]
 
     mynews = News.objects.get(name=word)
     mynews. show = mynews.show + 1;
     mynews.save()
 
 
-    return render(request, 'front/news_detail.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'shownews': shownews, 'popnews':popnews, 'popnews':popnews, 'tag' : tag})
+    return render(request, 'front/news_detail.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'shownews': shownews, 'popnews':popnews, 'popnews':popnews, 'tag' : tag , 'trending':trending})
 
 def news_list(request):
 
