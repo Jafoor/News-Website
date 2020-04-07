@@ -30,14 +30,13 @@ def home(request):
     return render(request, 'front/home.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2, 'trending':trending})
 
 def about(request):
-    site = Main.objects.get(pk = 1)
-    news = News.objects.all().order_by('-pk')
-    lastnews = News.objects.all().order_by('-pk')[:3]
+    site = Main.objects.get(pk=2)
+    news = News.objects.filter(act=1).order_by('-pk')
     cat = Cat.objects.all()
     subcat = SubCat.objects.all()
-
-    popnews = News.objects.all().order_by('-show')
-    popnews2 = News.objects.all().order_by('-show')[:3]
+    lastnews = News.objects.filter(act=1).order_by('-pk')[:3]
+    popnews = News.objects.filter(act=1).order_by('-show')
+    popnews2 = News.objects.filter(act=1).order_by('-show')[:3]
     trending = Trending.objects.all().order_by('-pk')[:5]
     return render(request, 'front/about.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2, 'trending':trending})
 
@@ -47,6 +46,12 @@ def panel(request):
     if not request.user.is_authenticated:
         return redirect('mylogin')
     # login check end
+    """
+    perm = 0
+    perms = Permission.objects.filter(user=request.user)
+    for i in perms :
+        if i.codename == "master_user" : perm = 1
+    """
 
     return render(request, 'back/home.html')
 

@@ -38,7 +38,18 @@ def news_list(request):
         return redirect('mylogin')
     # login check end
 
-    news = News.objects.all()
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == "masteruser" : perm = 1
+
+    if perm == 0 :
+        news = News.objects.filter(writer = request.user)
+
+    elif perm == 1 :
+        news = News.objects.all()
+
+
+
     return render(request, 'back/news_list.html', {'news': news})
 
 
@@ -91,7 +102,7 @@ def news_add(request):
                     newsname = SubCat.objects.get(pk = newsid).name
                     ocatid = SubCat.objects.get(pk = newsid).catid
 
-                    b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = today ,time = time, picurl = url, picname = filename, writer = '-', catname = newsname, catid = newsid, show = 0, ocatid = ocatid, tag = tag)
+                    b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = today ,time = time, picurl = url, picname = filename, writer = request.user, catname = newsname, catid = newsid, show = 0, ocatid = ocatid, tag = tag)
                     b.save()
 
                     count = len(News.objects.filter(ocatid=ocatid))
@@ -131,6 +142,15 @@ def news_delete(request, pk):
         return redirect('mylogin')
     # login check end
 
+    perm = 0
+    for i in request.user.groups.all():
+        if i.name == "masteruser": perm = 1
+
+    if perm == 0:
+        a = News.objects.get(pk=pk).writer
+        if str(a) != str(request.user):
+            error = "Access Denied"
+            return render(request, 'back/error.html', {'error':error})
     try:
         b = News.objects.get(pk=pk)
         fs = FileSystemStorage()
@@ -161,6 +181,16 @@ def news_edit(request, pk):
     if len(News.objects.filter(pk=pk)) == 0:
         error = "News not found"
         return render(request, 'back/error.html' ,{'error':error})
+
+        perm = 0
+        for i in request.user.groups.all():
+            if i.name == "masteruser": perm = 1
+
+        if perm == 0:
+            a = News.objects.get(pk=pk).writer
+            if str(a) != str(request.user):
+                error = "Access Denied"
+                return render(request, 'back/error.html', {'error':error})
 
     news = News.objects.get(pk=pk)
     cat = SubCat.objects.all()
@@ -229,7 +259,22 @@ def news_edit(request, pk):
             b.catname = newsname
             b.catid = newsid
             b.tag = tag
+            b.act = 0
             b.save()
             return redirect('news_list')
 
     return render(request, 'back/news_edit.html', {'pk':pk, 'news':news, 'cat':cat})
+
+def news_publish(request,pk):
+
+    # login check start
+    if not request.user.is_authenticated :
+        return redirect('mylogin')
+    # login check end
+
+
+    news = News.objects.get(pk=pk)
+    news.act = 1
+    news.save()
+
+    return redirect('news_list')
