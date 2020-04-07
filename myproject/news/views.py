@@ -9,33 +9,38 @@ from trending.models import Trending
 import random
 # Create your views here.
 
-def news_detail(request, word):
+def news_detail(request,word):
 
-
-    site = Main.objects.get(pk = 1)
+    site = Main.objects.get(pk=1)
     news = News.objects.all().order_by('-pk')
-    lastnews = News.objects.all().order_by('-pk')[:3]
     cat = Cat.objects.all()
     subcat = SubCat.objects.all()
-    shownews = News.objects.filter(name = word)
+    lastnews = News.objects.all().order_by('-pk')[:3]
 
+    shownews = News.objects.filter(name=word)
     popnews = News.objects.all().order_by('-show')
     popnews2 = News.objects.all().order_by('-show')[:3]
-    tagname = News.objects.get(name=word).tag
-    tag = tagname.split(',')
     trending = Trending.objects.all().order_by('-pk')[:5]
 
-    mynews = News.objects.get(name=word)
-    mynews. show = mynews.show + 1;
-    mynews.save()
+    tagname = News.objects.get(name=word).tag
+    tag = tagname.split(',')
 
+    try :
+
+        mynews = News.objects.get(name=word)
+        mynews.show = mynews.show + 1
+        mynews.save()
+
+    except:
+
+        print("Can't Add Show")
 
     return render(request, 'front/news_detail.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'shownews': shownews, 'popnews':popnews, 'popnews':popnews, 'tag' : tag , 'trending':trending})
 
 
 def news_detail_short(request,pk):
 
-    site = Main.objects.get(pk=2)
+    site = Main.objects.get(pk=1)
     news = News.objects.all().order_by('-pk')
     cat = Cat.objects.all()
     subcat = SubCat.objects.all()
@@ -59,9 +64,9 @@ def news_detail_short(request,pk):
 
         print("Can't Add Show")
 
-    link = "/urls/" + str(News.objects.get(name=word).rand)
+    #link = "/urls/" + str(News.objects.get(name=word).rand)
 
-    return render(request, 'front/news_detail.html', {'site':site, 'news':news, 'cat':cat, 'subcat':subcat, 'lastnews':lastnews, 'shownews':shownews, 'popnews':popnews, 'popnews2':popnews2, 'tag':tag, 'trending':trending, 'link':link})
+    return render(request, 'front/news_detail.html', {'site':site, 'news':news, 'cat':cat, 'subcat':subcat, 'lastnews':lastnews, 'shownews':shownews, 'popnews':popnews, 'popnews2':popnews2, 'tag':tag, 'trending':trending})
 
 
 def news_list(request):

@@ -53,10 +53,13 @@ def panel(request):
     perms = Permission.objects.filter(user=request.user)
     for i in perms :
         if i.codename == "master_user" : perm = 1
-
+    '''
     rand = ""
     for i in range(10):
         rand = rand + random.choice(string.ascii_letters)
+    '''
+
+    rand = 1234544
 
     return render(request, 'back/home.html',{'rand':rand})
 
