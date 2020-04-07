@@ -6,6 +6,7 @@ import datetime
 from subcat.models import SubCat
 from cat.models import Cat
 from trending.models import Trending
+import random
 # Create your views here.
 
 def news_detail(request, word):
@@ -30,6 +31,38 @@ def news_detail(request, word):
 
 
     return render(request, 'front/news_detail.html',{'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'shownews': shownews, 'popnews':popnews, 'popnews':popnews, 'tag' : tag , 'trending':trending})
+
+
+def news_detail_short(request,pk):
+
+    site = Main.objects.get(pk=2)
+    news = News.objects.all().order_by('-pk')
+    cat = Cat.objects.all()
+    subcat = SubCat.objects.all()
+    lastnews = News.objects.all().order_by('-pk')[:3]
+
+    shownews = News.objects.filter(rand=pk)
+    popnews = News.objects.all().order_by('-show')
+    popnews2 = News.objects.all().order_by('-show')[:3]
+    trending = Trending.objects.all().order_by('-pk')[:5]
+
+    tagname = News.objects.get(rand=pk).tag
+    tag = tagname.split(',')
+
+    try :
+
+        mynews = News.objects.get(rand=pk)
+        mynews.show = mynews.show + 1
+        mynews.save()
+
+    except:
+
+        print("Can't Add Show")
+
+    link = "/urls/" + str(News.objects.get(name=word).rand)
+
+    return render(request, 'front/news_detail.html', {'site':site, 'news':news, 'cat':cat, 'subcat':subcat, 'lastnews':lastnews, 'shownews':shownews, 'popnews':popnews, 'popnews2':popnews2, 'tag':tag, 'trending':trending, 'link':link})
+
 
 def news_list(request):
 
@@ -74,6 +107,17 @@ def news_add(request):
     today = (str(year)+"/"+str(month)+"/"+str(day))
     time = str(now.hour) + ":" + str(now.minute)
 
+    date = str(year) + str(month) + str(day)
+    randint = str(random.randint(1000,9999))
+    rand = date + randint
+    rand = int(rand)
+
+    while len(News.objects.filter(rand=rand)) != 0:
+        randint = str(random.randint(1000,9999))
+        rand = date + randint
+        rand = int(rand)
+
+
     cat = SubCat.objects.all()
     #now = datetime.datetime.now() + datetime.timedelta(days = 10)
 
@@ -102,7 +146,7 @@ def news_add(request):
                     newsname = SubCat.objects.get(pk = newsid).name
                     ocatid = SubCat.objects.get(pk = newsid).catid
 
-                    b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = today ,time = time, picurl = url, picname = filename, writer = request.user, catname = newsname, catid = newsid, show = 0, ocatid = ocatid, tag = tag)
+                    b = News(name = newstitle , short_txt = newstxtshort , body_txt = newstxt, date = today ,time = time, picurl = url, picname = filename, writer = request.user, catname = newsname, catid = newsid, show = 0, ocatid = ocatid, tag = tag, rand = rand)
                     b.save()
 
                     count = len(News.objects.filter(ocatid=ocatid))

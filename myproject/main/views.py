@@ -8,8 +8,10 @@ from django.contrib.auth import authenticate, login, logout
 from trending.models import Trending
 import random
 from random import randint
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from manager.models import Manager
+import string
+from random import randint
 # Create your views here.
 
 def home(request):
@@ -46,14 +48,17 @@ def panel(request):
     if not request.user.is_authenticated:
         return redirect('mylogin')
     # login check end
-    """
+
     perm = 0
     perms = Permission.objects.filter(user=request.user)
     for i in perms :
         if i.codename == "master_user" : perm = 1
-    """
 
-    return render(request, 'back/home.html')
+    rand = ""
+    for i in range(10):
+        rand = rand + random.choice(string.ascii_letters)
+
+    return render(request, 'back/home.html',{'rand':rand})
 
 def mylogin(request):
 
