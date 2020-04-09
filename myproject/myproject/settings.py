@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'comment',
     'blacklist',
+    'django_crontab',
+    'qr_code',
 ]
 
 MIDDLEWARE = [
@@ -116,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
@@ -133,3 +135,8 @@ STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+
+CRONJOBS = [
+    ('*/5 * * * *', 'main.cron.my_job')
+]
