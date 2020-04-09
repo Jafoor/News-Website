@@ -8,6 +8,7 @@ from cat.models import Cat
 from trending.models import Trending
 import random
 from comment.models import Comment
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 
 def news_detail(request,word):
@@ -90,7 +91,16 @@ def news_list(request):
         news = News.objects.filter(writer = request.user)
 
     elif perm == 1 :
-        news = News.objects.all()
+        newss = News.objects.all()
+        paginator = Paginator(newss,1)
+        page = request.GET.get('page')
+
+        try:
+            news = paginator.page(page)
+        except EmptyPage:
+            news = paginator.page(paginator.num_page)
+        except PageNotAnInteger:
+            news = paginator.page(1)
 
 
 
