@@ -1,5 +1,5 @@
 # News-Website
-It's a news website where you and add news, view news, login as a user and other features.
+It's a news website where you and add news, view news, login as a user, comment in the news, message to admin. On the otherhant admin can be able to Manage all the avobe section and approval things.
 
 Firstly Create a folder where you will your project - Linux/Mac-OS Command mkdir (Folder Name)
 
