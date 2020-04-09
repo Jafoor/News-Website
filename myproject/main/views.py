@@ -12,6 +12,8 @@ from django.contrib.auth.models import User, Group, Permission
 from manager.models import Manager
 import string
 from random import randint
+from ipware import get_client_ip
+from ip2geotools.databases.noncommercial import DbIpCity
 # Create your views here.
 
 def home(request):
@@ -58,8 +60,7 @@ def panel(request):
     for i in range(10):
         rand = rand + random.choice(string.ascii_letters)
     '''
-
-    rand = 1234544
+    rand = 123454
 
     return render(request, 'back/home.html',{'rand':rand})
 
@@ -123,9 +124,17 @@ def myregister(request):
             return render(request, 'front/msgbox.html', {'msg':msg})
 
         if len(User.objects.filter(username=uname)) == 0 and len(User.objects.filter(email=email)) == 0 :
+            ip, is_routable = get_client_ip(request)
+            if ip is None:
+                ip = "0:0:0:0"
+            try:
+                response = DbIpCity.get(ip,api_key='free')
+                country = response.country + " | " + response.city
+            except:
+                country = "Unknown"
 
             user = User.objects.create_user(username=uname,email=email,password=password1)
-            b = Manager(name = name, utxt = uname, email = email)
+            b = Manager(name = name, utxt = uname, email = email,ip=ip, country=country)
             b.save()
 
     return render(request, 'front/login.html')
