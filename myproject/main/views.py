@@ -22,6 +22,7 @@ def home(request):
     site = Main.objects.get(pk = 1)
     news = News.objects.all().order_by('-pk')
     lastnews = News.objects.all().order_by('-pk')[:3]
+    lastnews2 = News.objects.all().order_by('-pk')[:4]
     cat = Cat.objects.all()
     subcat = SubCat.objects.all()
 
@@ -31,7 +32,7 @@ def home(request):
 
     #random_object = Trending.objects.all()[random(0,len(trending)-1)]
 
-    return render(request, 'front/home.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2, 'trending':trending})
+    return render(request, 'front/home.html', {'site' : site, 'news': news, 'cat':cat, 'subcat': subcat, 'lastnews': lastnews, 'popnews':popnews,'popnews2':popnews2, 'trending':trending,'lastnews2':lastnews2})
 
 def about(request):
     site = Main.objects.get(pk=2)
